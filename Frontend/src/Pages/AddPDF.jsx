@@ -1,0 +1,15 @@
+import "../app.css";
+
+function AddPDF() {
+  return (
+    <>
+      <div className="flex justify-center h-screen items-center bg-[#264653]">
+        <h1 className=" text-7xl font-bold text-[#E9C46A] text-center">
+          You Add Stuff Here. Understand Compadre?
+        </h1>
+      </div>
+    </>
+  );
+}
+
+export default AddPDF;
