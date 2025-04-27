@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
-import { AnimatePresence, motion} from "framer-motion";
+// eslint-disable-next-line no-unused-vars
+import { AnimatePresence, motion } from "framer-motion";
 
 function ViewPDF() {
   const [file, setFile] = useState(null);
