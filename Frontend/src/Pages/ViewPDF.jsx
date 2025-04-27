@@ -1,10 +1,11 @@
 import "../app.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import { AnimatePresence, motion} from "framer-motion";
 
-function AddPDF() {
+function ViewPDF() {
   const [file, setFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -31,9 +32,25 @@ function AddPDF() {
     );
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowLeft") {
+        PrevPage();
+      } else if (event.key === "ArrowRight") {
+        NextPage();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [numPages]);
+
   return (
     <>
-      <div className="flex flex-col justify-center min-h-screen h-fit items-center bg-[#264653] gap-8">
+      <div className="flex flex-col justify-center min-h-screen h-fit items-center bg-[#1d323b] gap-8">
         {!file && (
           <>
             <h1 className="text-5xl text-white">Add your PDF to View</h1>
@@ -54,14 +71,8 @@ function AddPDF() {
         )}
         {file && (
           <div>
-            <nav className="flex flex-row gap-5 justify-center">
-              <button
-                onClick={PrevPage}
-                className="bg-[#e9c46a] rounded-[10px] p-2 mb-5"
-              >
-                Prev Page
-              </button>
-              <p className="bg-[#e9c46a] rounded-[10px] p-2 mb-5">
+            <div className="flex justify-center">
+              <p className="bg-[#e9c46a] rounded-[10px] p-2 mb-5 w-fit">
                 Page &nbsp;
                 <input
                   type="number"
@@ -77,16 +88,34 @@ function AddPDF() {
                 />
                 &nbsp; of {numPages}
               </p>
+            </div>
+            <div className="flex flex-row items-center">
+              <button
+                onClick={PrevPage}
+                className="flex bg-gradient-to-l from-[#e9c46a] to-[#1d323b]  p-2 h-130 text-4xl mr-4 items-center"
+              >
+                {"<"}
+              </button>
+              <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={pageNumber}
+                    initial={{ opacity: 0, x: 0 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, y: 100 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Page pageNumber={pageNumber} scale={0.8} />
+                  </motion.div>
+                </AnimatePresence>
+              </Document>
               <button
                 onClick={NextPage}
-                className="bg-[#e9c46a] rounded-[10px] p-2 mb-5"
+                className="flex bg-gradient-to-l to-[#e9c46a] from-[#1d323b]  p-2 h-130 text-4xl ml-4 items-center"
               >
-                Next Page
+                {">"}
               </button>
-            </nav>
-            <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-              <Page pageNumber={pageNumber} scale={0.7} />
-            </Document>
+            </div>
           </div>
         )}
       </div>
@@ -94,4 +123,4 @@ function AddPDF() {
   );
 }
 
-export default AddPDF;
+export default ViewPDF;

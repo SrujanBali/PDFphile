@@ -18,7 +18,7 @@ function Navbar() {
             <a href="/contact">Contact</a>
           </li>
           <li>
-            <a href="/addpdf">Add PDF</a>
+            <a href="/viewpdf">View PDF</a>
           </li>
         </div>
       </div>
