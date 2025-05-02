@@ -10,6 +10,7 @@ function ViewPDF() {
   const [file, setFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+  const [scale, setScale] = useState(0.8);
 
   const onFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -33,6 +34,14 @@ function ViewPDF() {
     );
   };
 
+  const zoomIn = () =>{
+    setScale(prev => Math.min(prev + 0.2, 3.0));
+  };
+
+  const zoomOut = () =>{
+    setScale(prev => Math.max(prev - 0.2, 0.4))
+  }
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "ArrowLeft") {
@@ -48,6 +57,7 @@ function ViewPDF() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [numPages]);
+
 
   return (
     <>
@@ -72,7 +82,8 @@ function ViewPDF() {
         )}
         {file && (
           <div>
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center gap-20">
+              <button className="flex justify-center bg-[#e9c46a] rounded-[10px] p-2 mb-5 w-fit" onClick={zoomIn}>+</button>
               <p className="bg-[#e9c46a] rounded-[10px] p-2 mb-5 w-fit">
                 Page &nbsp;
                 <input
@@ -89,14 +100,16 @@ function ViewPDF() {
                 />
                 &nbsp; of {numPages}
               </p>
+              <button className = "flex justify-center bg-[#e9c46a] rounded-[10px] p-2 mb-5 w-fit" onClick={zoomOut}>-</button>
             </div>
-            <div className="flex flex-row items-center">
+            <div className="flex flex-row justify-center items-center">
               <button
                 onClick={PrevPage}
                 className="flex bg-gradient-to-l from-[#e9c46a] to-[#1d323b]  p-2 h-130 text-4xl mr-4 items-center"
               >
                 {"<"}
               </button>
+              <div className="flex w-[500px] h-[633px] justify-center overflow-hidden relative items-center">
               <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -105,11 +118,12 @@ function ViewPDF() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, y: 100 }}
                     transition={{ duration: 0.2 }}
-                  >
-                    <Page pageNumber={pageNumber} scale={0.8} />
+                    >
+                    <Page pageNumber={pageNumber} scale={scale} renderAnnotationLayer = {false} renderTextLayer = {false} />
                   </motion.div>
                 </AnimatePresence>
               </Document>
+              </div>
               <button
                 onClick={NextPage}
                 className="flex bg-gradient-to-l to-[#e9c46a] from-[#1d323b]  p-2 h-130 text-4xl ml-4 items-center"
