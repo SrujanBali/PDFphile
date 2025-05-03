@@ -1,5 +1,8 @@
 import "../app.css";
 import { useState, useEffect, useRef } from "react";
+import plusicon from "../assets/plus.svg";
+import minusicon from "../assets/minus.svg";
+import fullscreenicon from "../assets/fullscreen.svg";
 import { Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
@@ -10,13 +13,26 @@ function ViewPDF() {
   const [file, setFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [scale, setScale] = useState(0.8);
-  const [zoom, setZoom] = useState(1);
+  const [scale, setScale] = useState(0.4);
+  const [zoom, setZoom] = useState(1.5);
   const containerRef = useRef();
   const contentRef = useRef();
   const isDragging = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
   const scrollStart = useRef({ left: 0, top: 0 });
+  const fullscreenRef = useRef();
+
+  const toggleFullscreen = () => {
+    const elem = fullscreenRef.current;
+
+    if (!document.fullscreenElement) {
+      elem.requestFullscreen().catch((err) => {
+        alert(`Error trying to go fullscreen:- ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
 
   const handleWheel = (e) => {
     e.preventDefault();
@@ -119,11 +135,11 @@ function ViewPDF() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [numPages]);
+  });
 
   return (
     <>
-      <div className="flex flex-col justify-center min-h-screen h-fit items-center bg-[#1d323b] gap-8 pb-10">
+      <div className="flex flex-col justify-center min-h-screen h-fit items-center bg-[#1d323b] gap-8">
         {!file && (
           <>
             <h1 className="text-5xl text-white">Add your PDF to View</h1>
@@ -143,15 +159,15 @@ function ViewPDF() {
           </>
         )}
         {file && (
-          <div>
-            <div className="flex justify-center items-center gap-20 mt-7">
+          <div ref={fullscreenRef}>
+            <div className="flex flex-row justify-center items-center gap-20 mt-7 z-0">
               <button
-                className="flex justify-center bg-[#e9c46a] rounded-[10px] p-2 mb-5 w-fit"
-                onClick={zoomIn}
+                className="flex justify-center bg-[#e9c46a] rounded-[10px] p-2 mb-1 w-fit cursor-pointer"
+                onClick={zoomOut}
               >
-                +
+                <img src={minusicon} alt="Prev" className="" />
               </button>
-              <p className="bg-[#e9c46a] rounded-[10px] p-2 mb-5 w-fit">
+              <p className="bg-[#e9c46a] rounded-[10px] p-2 mb-1 w-fit">
                 Page &nbsp;
                 <input
                   type="number"
@@ -168,25 +184,31 @@ function ViewPDF() {
                 &nbsp; of {numPages}
               </p>
               <button
-                className="flex justify-center bg-[#e9c46a] rounded-[10px] p-2 mb-5 w-fit"
-                onClick={zoomOut}
+                className="flex justify-center bg-[#e9c46a] rounded-[10px] p-2 mb-1 w-fit cursor-pointer"
+                onClick={zoomIn}
               >
-                -
+                <img src={plusicon} alt="Next" />
               </button>
             </div>
+            <button
+              className="flex justify-center bg-[#e9c46a] rounded-[10px] p-2 mb-5 w-fit cursor-pointer fixed top-[100px] right-10"
+              onClick={toggleFullscreen}
+            >
+              <img src={fullscreenicon} alt="Fullscreen" />
+            </button>
             <div
-              className="flex flex-row justify-center items-center overflow-auto"
+              className="flex flex-row justify-center items-center"
               onMouseEnter={() => (document.body.style.overflow = "hidden")}
-              onMouseLeave={() => (document.body.style.overflow = "auto")}
+              onMouseLeave={() => (document.body.style.overflow = "hidden")}
             >
               <button
                 onClick={PrevPage}
-                className="flex bg-gradient-to-l from-[#e9c46a] to-[#1d323b]  p-2 h-130 text-4xl mr-4 items-center"
+                className="flex bg-gradient-to-l from-[#e9c46a] to-[#1d323b]  p-2 h-130 text-4xl mr-4 items-center cursor-pointer"
               >
                 {"<"}
               </button>
               <div
-                className="flex w-[500px] h-[633px] justify-center overflow-auto relative items-center"
+                className="flex w-[500px] h-[633px] justify-center overflow-auto relative items-center scrollbar-hidden"
                 ref={containerRef}
                 onWheel={handleWheel}
                 onMouseDown={handleMouseDown}
@@ -224,7 +246,7 @@ function ViewPDF() {
               </div>
               <button
                 onClick={NextPage}
-                className="flex bg-gradient-to-l to-[#e9c46a] from-[#1d323b]  p-2 h-130 text-4xl ml-4 items-center"
+                className="flex bg-gradient-to-l to-[#e9c46a] from-[#1d323b]  p-2 h-130 text-4xl ml-4 items-center cursor-pointer"
               >
                 {">"}
               </button>

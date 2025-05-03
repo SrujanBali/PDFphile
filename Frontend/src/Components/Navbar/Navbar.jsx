@@ -3,11 +3,12 @@ import "../../app.css";
 function Navbar() {
   return (
     <>
-      <div className="flex h-15 bg-[#2A9D8F] mb- pb-0 justify-between">
-        <div className="flex text-4xl justify-center items-center ml-10  font-tagesschrift">
+    <div className="flex flex-row z-20 fixed">
+      <div className="flex flex-col h-screen bg-[#2A9D8F] mb-0 pb-0 justify-evenly w-fit">
+        <div className="flex flex-col text-4xl justify-center items-center font-tagesschrift pr-7 pl-7">
           PDFphile
         </div>
-        <div className=" flex list-none gap-4 mr-10 justify-center items-center text-[20px]">
+        <div className=" flex flex-col list-none mr-10 justify-evenly items-center text-[20px] h-full">
           <li>
             <a href="/">Home</a>
           </li>
@@ -22,6 +23,7 @@ function Navbar() {
           </li>
         </div>
       </div>
+    </div>
     </>
   );
 }
