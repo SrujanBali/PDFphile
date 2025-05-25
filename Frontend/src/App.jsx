@@ -4,6 +4,7 @@ import Homepage from "./Pages/Homepage.jsx";
 import About from "./Pages/About.jsx";
 import Contact from "./Pages/Contact.jsx";
 import ViewPDF from "./Pages/ViewPDF.jsx";
+import EditPDF from "./Pages/EditPDF.jsx";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/viewpdf" element={<ViewPDF />} />
+            <Route path="/editpdf" element={<EditPDF />} />
           </Routes>
         </div>
       </div>
