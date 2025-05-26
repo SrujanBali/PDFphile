@@ -4,7 +4,7 @@
   "description": "A Website for PDF handling",
   "main": "server.js",
   "scripts": {
-    "test": "nodemon ./Backend/server.js"
+    "server": "nodemon ./Backend/server.js"
   },
   "type": "module",
   "keywords": [],
